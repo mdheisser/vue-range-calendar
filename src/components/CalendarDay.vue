@@ -10,6 +10,7 @@
     'first-selected': isFirstSelected,
     'last-selected': isLastSelected,
     'invalid': isInvalid,
+    'hidden': isHidden,
     'selecting': isSelecting
   }"
       @click="clicked"
@@ -29,10 +30,12 @@ export default {
   name: 'CalendarDay',
   props: {
     day: Object,
+
     isSelecting: Boolean,
     isFirstSelected: Boolean,
     isLastSelected: Boolean,
     isInvalid: Boolean,
+    isHidden: Boolean,
   },
   computed: {
     isSelectable: function() {
@@ -46,10 +49,14 @@ export default {
   },
   methods: {
     clicked: function() {
-      this.$emit('clicked', this.day.moment)
+      if (!this.isHidden) {
+        this.$emit('clicked', this.day.moment)
+      }
     },
     mouseOver: function() {
-      this.$emit('hovered', this.day.moment)
+      if (!this.isHidden) {
+        this.$emit('hovered', this.day.moment)
+      }
     }
   }
 }
@@ -67,6 +74,14 @@ export default {
     z-index: 0;
   }
 
+  .calendar-day.booked:not(.lastBooked) {
+    cursor: auto;
+  }
+
+  .calendar-day.hidden {
+    cursor: auto;
+  }
+
   .calendar-day-wrapper {
     display: block;
     bottom: 0;
@@ -76,10 +91,14 @@ export default {
     margin-top: 50%;
   }
 
+  .hidden .calendar-day-wrapper {
+    display: none;
+  }
+
   .calendar-day-wrapper::after {
     display: block;
     margin-top: 50%;
-    content: ""
+    content: '';
   }
 
   .calendar-day-content {
@@ -132,7 +151,7 @@ export default {
   }
 
   /* Hover Behavior + Selected*/
-  .calendar-day.selectable:not(.selecting):not([selected]):hover::after {
+  .calendar-day.selectable:not(.selecting):not([selected]):not(.hidden):hover::after {
     background: linear-gradient(to right bottom, transparent calc(50% - 1px), #fff, #8acdf6 calc(50% + 1px));
   }
 
@@ -144,6 +163,10 @@ export default {
     background: linear-gradient(to right bottom, transparent calc(50%), #8acdf6 calc(50%));
   }
 
+  .calendar-day[selected].first-selected.last-selected:hover::after {
+    background: linear-gradient(to right bottom, transparent calc(50%), #8acdf6 calc(50%));
+  }
+
   .calendar-day[selected].last-selected::after {
     background: linear-gradient(to right bottom, #8acdf6 calc(50%), transparent calc(50%));
   }
@@ -152,6 +175,8 @@ export default {
     background: linear-gradient(to right bottom, #8acdf6 calc(50%), transparent calc(50%));
   }
 
+
+  /* Invalid */
   .calendar-day[selected].invalid::after {
     background: linear-gradient(to right bottom, #999999 calc(50%), #999999 calc(50%));
   }

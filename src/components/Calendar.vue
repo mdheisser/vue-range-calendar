@@ -1,5 +1,7 @@
 <template>
   <div class="calendar-container">
+    <calendar-month-slider direction="previous" @click.native="slideMonths('previous')"/>
+    <calendar-month-slider direction="next" @click.native="slideMonths('next')" />
     <div class="calendar-month-container" v-for="month in months" :key="month.id">
       <calendar-month
         @daySelected="daySelected($event)"
@@ -19,6 +21,7 @@ import 'moment/locale/en-gb'
 import 'moment/locale/fr'
 
 import CalendarMonth from './CalendarMonth.vue'
+import CalendarMonthSlider from './CalendarMonthSlider.vue'
 
 export default {
   name: 'Calendar',
@@ -41,7 +44,14 @@ export default {
     }
   },
   methods: {
-    filterDatesInMonth: function(datesArray, startOfMonth) {
+    slideMonths: function (direction) {
+      if (direction === 'next') {
+        this.renderCalendar(this.months[0].start.add(this.monthsDisplayed, 'months').startOf('month').format('YYYY-M'))
+      } else if (direction === 'previous') {
+        this.renderCalendar(this.months[0].start.subtract(this.monthsDisplayed, 'months').startOf('month').format('YYYY-M'))
+      }
+    },
+    filterDatesInMonth: function (datesArray, startOfMonth) {
       return datesArray ?
         datesArray
           .map((day) => {
@@ -62,8 +72,8 @@ export default {
         this.isSelecting = true
         this.selectedDays = Array.from(this.$moment.range(this.startSelectionDate, this.endSelectionDate).by('days'))
       } else {
-        if (!this.isInvalid) {
-          this.isSelecting = false
+        this.isSelecting = false
+        if (!this.isInvalid && (this.startSelectionDate < this.endSelectionDate)) {
           this.$emit('selected-range', {
             start: this.startSelectionDate.format('YYYY-M-D'),
             end: this.endSelectionDate.format('YYYY-M-D'),
@@ -77,33 +87,37 @@ export default {
         if (this.startSelectionDate > this.endSelectionDate) {
           this.selectedDays = []
         } else {
-          this.isInvalid = !this.isSelectionValid()
           this.selectedDays = Array.from(this.$moment.range(this.startSelectionDate, this.endSelectionDate).by('days'))
+          this.isInvalid = !this.isSelectionValid()
         }
       }
     },
-    isSelectionValid() {
+    isSelectionValid: function () {
       const invalidDays = this.bookedDays.filter((bookedDay) => {
         return this.selectedDays.map((day) => { return day.format('YYYY-M-D') }).includes(bookedDay)
       })
-      return invalidDays.length === 0
+      return invalidDays.length <= 1
+    },
+    renderCalendar: function (startMonth) {
+      this.months = []
+      let startMonthMoment = this.$moment(startMonth, 'YYYY-MM').startOf('month')
+
+      for (let i = 0; i < this.monthsDisplayed; i++) {
+        let monthMoment = this.$moment(startMonthMoment).add(i, 'months')
+        this.months.push({
+          id: i,
+          start: monthMoment,
+          bookedDays: this.filterDatesInMonth(this.bookedDays, monthMoment),
+          blockedDays: this.filterDatesInMonth(this.blockedDays, monthMoment)
+        })
+      }
     }
   },
   mounted() {
     this.$moment.locale(this.locale)
-    let startMonthMoment = this.$moment(this.startMonth, 'YYYY-MM').startOf('month')
-
-    for (let i = 0; i < this.monthsDisplayed; i++) {
-      let monthMoment = this.$moment(startMonthMoment).add(i, 'months')
-      this.months.push({
-        id: i,
-        start: monthMoment,
-        bookedDays: this.filterDatesInMonth(this.bookedDays, monthMoment),
-        blockedDays: this.filterDatesInMonth(this.blockedDays, monthMoment)
-      })
-    }
+    this.renderCalendar(this.startMonth)
   },
-  components: {CalendarMonth}
+  components: { CalendarMonth, CalendarMonthSlider }
 }
 </script>
 

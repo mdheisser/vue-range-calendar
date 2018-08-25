@@ -22,7 +22,7 @@
     },
     methods: {
       selectedRange: function(range) {
-        console.log(range)
+        alert('Range selected: from ' + range.start + ' to ' + range.end)
       }
     }
   }

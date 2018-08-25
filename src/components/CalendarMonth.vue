@@ -13,6 +13,7 @@
         <tbody class="month-table-body">
           <tr v-for="week in weeks" :key="week.id">
             <calendar-day
+              :isHidden="!isDayInMonth(day.moment)"
               @clicked="dayClicked($event)"
               @hovered="dayHovered($event)"
               v-for="day in week.days"
@@ -51,7 +52,18 @@ export default {
       dayRange: []
     }
   },
+  watch: {
+    'month': {
+      handler: function () {
+        this.renderMonth()
+      },
+      deep: true
+    }
+  },
   methods: {
+    isDayInMonth: function (day) {
+      return day.month() === this.month.start.month()
+    },
     isDaySelected: function(day) {
       return this.dayIndexInSelection(day) >= 0
     },
@@ -131,6 +143,7 @@ export default {
       this.$emit('dayHovered', date)
     },
     renderMonth: function() {
+      this.weeks = []
       this.dayRange = this.computeDayRange()
       this.dayLabels = this.computeDayLabels()
 
