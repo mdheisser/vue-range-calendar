@@ -111,11 +111,11 @@ export default {
   }
 
   .calendar-day.booked.first-booked {
-    background: linear-gradient(to right bottom, transparent calc(50% - 1px), #2ceeda calc(50% + 1px));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #2ceeda calc(50% + 2px), #2ceeda);
   }
 
   .calendar-day.booked.last-booked {
-    background: linear-gradient(to right bottom, #2ceeda calc(50% - 1px), transparent calc(50% + 1px));
+    background: linear-gradient(to right bottom, #2ceeda 0, #2ceeda calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
   .calendar-day.blocked:not(.first-blocked):not(.last-blocked) {
@@ -124,19 +124,19 @@ export default {
   }
 
   .calendar-day.blocked.first-blocked {
-    background: linear-gradient(to right bottom, transparent calc(50% - 1px), #fff, #e6e6e6 calc(50% + 1px));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #e6e6e6 calc(50% + 2px), #e6e6e6);
   }
 
   .calendar-day.blocked.last-blocked {
-    background: linear-gradient(to right bottom, #e6e6e6 calc(50% - 1px), #fff, transparent calc(50% + 1px));
+    background: linear-gradient(to right bottom, #e6e6e6 0, #e6e6e6 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
   .calendar-day.last-booked.first-blocked {
-    background: linear-gradient(to right bottom, #2ceeda calc(50% - 1px), #fff, #e6e6e6 calc(50% + 1px));
+    background: linear-gradient(to right bottom, #2ceeda 0, #2ceeda calc(50% - 2px), #fff 50%, #e6e6e6 calc(50% + 2px), #e6e6e6);
   }
 
   .calendar-day.first-booked.last-blocked {
-    background: linear-gradient(to right bottom, #e6e6e6 calc(50% - 1px), #fff, #2ceeda calc(50% + 1px));
+    background: linear-gradient(to right bottom, #e6e6e6 0, #e6e6e6 calc(50% - 2px), #fff 50%, #2ceeda calc(50% + 2px), #2ceeda);
   }
 
   .calendar-day::after {
@@ -152,45 +152,45 @@ export default {
 
   /* Hover Behavior + Selected*/
   .calendar-day.selectable:not(.selecting):not([selected]):not(.hidden):hover::after {
-    background: linear-gradient(to right bottom, transparent calc(50% - 1px), #fff, #8acdf6 calc(50% + 1px));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
   }
 
   .calendar-day[selected]::after {
-    background: linear-gradient(to right bottom, #8acdf6 calc(50%), #8acdf6 calc(50%));
+    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
   }
 
   .calendar-day[selected].first-selected::after {
-    background: linear-gradient(to right bottom, transparent calc(50%), #8acdf6 calc(50%));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
   }
 
   .calendar-day[selected].first-selected.last-selected:hover::after {
-    background: linear-gradient(to right bottom, transparent calc(50%), #8acdf6 calc(50%));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
   }
 
   .calendar-day[selected].last-selected::after {
-    background: linear-gradient(to right bottom, #8acdf6 calc(50%), transparent calc(50%));
+    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
   .calendar-day[selected].last-selected:hover::after {
-    background: linear-gradient(to right bottom, #8acdf6 calc(50%), transparent calc(50%));
+    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
 
   /* Invalid */
   .calendar-day[selected].invalid::after {
-    background: linear-gradient(to right bottom, #999999 calc(50%), #999999 calc(50%));
+    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, #999999 calc(50% + 2px), #999999);
   }
 
   .calendar-day[selected].invalid.first-selected::after {
-    background: linear-gradient(to right bottom, transparent calc(50%), #999999 calc(50%));
+    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #999999 calc(50% + 2px), #999999);
   }
 
   .calendar-day[selected].invalid.last-selected::after {
-    background: linear-gradient(to right bottom, #999999 calc(50%), transparent calc(50%));
+    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
   .calendar-day[selected].invalid.last-selected:hover::after {
-    background: linear-gradient(to right bottom, #999999 calc(50%), transparent calc(50%));
+    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
   }
 
 </style>

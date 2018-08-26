@@ -55,12 +55,12 @@ export default {
       return datesArray ?
         datesArray
           .map((day) => {
-            return this.$moment(day, 'YYYY-MM-DD')
+            return this.$moment(day, 'YYYY-M-DD')
           })
           .filter((day) => {
             return day.isBetween(
-              this.$moment(startOfMonth).startOf('month').subtract(1, 'days').format('YYYY-M-DD'),
-              this.$moment(startOfMonth).endOf('month').add(1, 'days').format('YYYY-M-DD')
+              this.$moment(startOfMonth).startOf('month').subtract(1, 'days'),
+              this.$moment(startOfMonth).endOf('month').add(1, 'days')
             )
           })
         : []
