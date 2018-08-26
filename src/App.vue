@@ -1,10 +1,10 @@
 <template>
   <div id="app">
     <calendar
-      locale="fr"
-      start-month="2018-09-01"
+      start-day="2018-09-01"
       :months-number="3"
       :types="types"
+      :options="options"
       :is-selection-valid-function="isSelectionValid"
       :is-day-selectable-function="isDaySelectable"
       @selected-range="selectedRange($event)"
@@ -17,6 +17,15 @@
     name: 'app',
     data() {
       return {
+        options: {
+          mode: 'half-day', // or 'full-day'
+          locale: 'fr',
+          colors: {
+            invalid: '#999',
+            hover: '#8acdf6',
+            selected: 'blue'
+          }
+        },
         types: {
           booked: {
             periods: [

@@ -19,13 +19,14 @@
               :isHidden="!isDayInMonth(day.moment)"
               :types-applied="day.typesApplied"
               :selection="{
-                isSelected: isDaySelected(day.moment),
+                isSelected: isDaySelected(day.moment) && isDayInMonth(day.moment),
                 isSelecting: isSelecting,
                 isFirstSelected: isFirstDaySelected(day.moment),
                 isLastSelected: isLastDaySelected(day.moment),
                 isInvalid: isInvalid
               }"
               :is-day-selectable-function="isDaySelectableFunction"
+              :options="options"
               @clicked="dayClicked($event)"
               @hovered="dayHovered($event)"
             />
@@ -48,6 +49,7 @@ export default {
     isSelecting: Boolean,
     isInvalid: Boolean,
     isDaySelectableFunction: Function,
+    options: Object
   },
   data() {
     return {

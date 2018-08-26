@@ -8,7 +8,7 @@
       'morning-blocked': typesApplied.blocked.morning,
       'night-blocked': typesApplied.blocked.night,
 
-      'selectable': isDaySelectable && !isHidden,
+      'selectable': isDaySelectable,
 
       'first-selected': selection.isFirstSelected,
       'last-selected': selection.isLastSelected,
@@ -19,6 +19,8 @@
     :style="dayBackground"
     @click="clicked"
     @mouseover="mouseOver"
+    @mouseenter="mouseEnter"
+    @mouseleave="mouseLeave"
   >
     <div class="calendar-day-wrapper">
       <div class="calendar-day-content">
@@ -39,23 +41,55 @@ export default {
     typesApplied: Object,
     selection: Object,
 
-    isDaySelectableFunction: Function
+    isDaySelectableFunction: Function,
+    options: Object
   },
   data() {
     return {
-      dayLabels: []
+      isHovered: false,
     }
   },
   computed: {
     isDaySelectable: function() {
-      return this.isDaySelectableFunction(this)
+      return this.isDaySelectableFunction(this) && !this.isHidden
     },
     dayBackground: function() {
       const morningTypeApplied = Object.keys(this.typesApplied).find((type) => (this.typesApplied[type].morning === true))
       const nightTypeApplied = Object.keys(this.typesApplied).find((type) => (this.typesApplied[type].night === true))
 
-      const morningColor = morningTypeApplied ? this.typesApplied[morningTypeApplied].color : 'transparent';
-      const nightColor = nightTypeApplied ? this.typesApplied[nightTypeApplied].color : 'transparent';
+      let morningColor = morningTypeApplied ? this.typesApplied[morningTypeApplied].color : 'transparent';
+      let nightColor = nightTypeApplied ? this.typesApplied[nightTypeApplied].color : 'transparent';
+
+      if (this.selection.isSelected) {
+        if (!this.selection.isFirstSelected) {
+          morningColor = !this.selection.isInvalid ? this.options.colors.selected : this.options.colors.invalid
+          nightColor = this.options.mode === 'full-day' ? morningColor : nightColor
+        }
+
+        if (!this.selection.isLastSelected) {
+          nightColor = !this.selection.isInvalid ? this.options.colors.selected : this.options.colors.invalid
+          morningColor = this.options.mode === 'full-day' ? nightColor : morningColor
+        }
+      }
+
+      if (this.isHovered) {
+        if (this.isDaySelectable) {
+          if (!this.selection.isSelected && !this.selection.isSelecting) {
+            nightColor = this.options.colors.hover
+            morningColor = this.options.mode === 'full-day' ? nightColor : morningColor
+          }
+
+          if (this.selection.isSelecting && this.selection.isFirstSelected) {
+            nightColor = !this.selection.isInvalid ? this.options.colors.selected : this.options.colors.invalid
+            morningColor = this.options.mode === 'full-day' ? nightColor : morningColor
+          }
+
+          if (this.selection.isSelecting && this.selection.isLastSelected && !this.selection.isFirstSelected) {
+            morningColor = !this.selection.isInvalid ? this.options.colors.selected : this.options.colors.invalid
+            nightColor = this.options.mode === 'full-day' ? morningColor : nightColor
+          }
+        }
+      }
 
       if (morningColor === nightColor) {
         return {
@@ -79,6 +113,12 @@ export default {
       if (!this.isHidden) {
         this.$emit('hovered', this.date)
       }
+    },
+    mouseEnter: function() {
+      this.isHovered = true
+    },
+    mouseLeave: function() {
+      this.isHovered = false
     }
   }
 }
@@ -94,15 +134,8 @@ export default {
     z-index: 0;
   }
 
-  .calendar-day::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: -1;
-    background: none;
+  .calendar-day.selectable {
+    cursor: pointer;
   }
 
   .calendar-day-wrapper {
@@ -120,62 +153,11 @@ export default {
     content: '';
   }
 
-  .calendar-day-content {
-    font-size: 0.85rem;
-  }
-
   .hidden .calendar-day-wrapper {
     display: none;
   }
 
-  /* Hover Behavior + Selected */
-  .calendar-day.selectable:not(.selecting):not(.selected):not(.hidden):hover::after {
-    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
-  }
-
-  .calendar-day.selectable {
-    cursor: pointer;
-  }
-
-  .calendar-day.selected::after {
-    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
-  }
-
-  .calendar-day.selected.first-selected::after {
-    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
-  }
-
-  .calendar-day.selected.last-selected::after {
-    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
-  }
-
-  .calendar-day.selected.last-selected:hover::after {
-    background: linear-gradient(to right bottom, #8acdf6 0, #8acdf6 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
-  }
-
-  .calendar-day.selected.first-selected.last-selected:hover::after {
-    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #8acdf6 calc(50% + 2px), #8acdf6);
-  }
-
-
-  /* Invalid */
-  .calendar-day.selected.invalid::after {
-    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, #999999 calc(50% + 2px), #999999);
-  }
-
-  .calendar-day.selected.invalid.first-selected::after {
-    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #999999 calc(50% + 2px), #999999);
-  }
-
-  .calendar-day.selected.invalid.last-selected::after {
-    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
-  }
-
-  .calendar-day.selected.invalid.last-selected:hover::after {
-    background: linear-gradient(to right bottom, #999999 0, #999999 calc(50% - 2px), #fff 50%, transparent calc(50% + 2px), transparent);
-  }
-
-  .calendar-day.selected.invalid.first-selected.last-selected:hover::after {
-    background: linear-gradient(to right bottom, transparent 0, transparent calc(50% - 2px), #fff 50%, #999999 calc(50% + 2px), #999999);
+  .calendar-day-content {
+    font-size: 0.85rem;
   }
 </style>

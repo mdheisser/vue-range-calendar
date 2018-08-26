@@ -11,6 +11,7 @@
         :is-selecting="isSelecting"
         :is-invalid="isInvalid"
         :is-day-selectable-function="isDaySelectableFunction"
+        :options="{ colors: options.colors, mode: options.mode }"
       />
     </div>
   </div>
@@ -27,9 +28,9 @@ import CalendarMonthSlider from './CalendarMonthSlider.vue'
 export default {
   name: 'Calendar',
   props: {
-    locale: String,
+    options: Object,
     monthsNumber: Number,
-    startMonth: String,
+    startDay: String,
     types: Object,
     isSelectionValidFunction: Function,
     isDaySelectableFunction: Function,
@@ -47,8 +48,8 @@ export default {
     }
   },
   mounted() {
-    this.$moment.locale(this.locale)
-    this.renderCalendar(this.$moment(this.startMonth))
+    this.$moment.locale(this.options.locale)
+    this.renderCalendar(this.$moment(this.startDay))
   },
   methods: {
     renderCalendar: function (start) {
@@ -79,16 +80,23 @@ export default {
           }
 
           if (periodsContainingDay.length) {
-            const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
-            if (indexOfDayInPeriod === 0) {
+            if (this.options.mode === 'half-day') {
+              const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
+              if (indexOfDayInPeriod === 0) {
+                typeApplied.night = true
+                typeApplied.morning = false
+              } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
+                typeApplied.morning = true
+                typeApplied.night = false
+              } else {
+                typeApplied.morning = true
+                typeApplied.night = true
+              }
+            } else if (this.options.mode === 'full-day') {
               typeApplied.night = true
-              typeApplied.morning = false
-            } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
               typeApplied.morning = true
-              typeApplied.night = false
             } else {
-              typeApplied.morning = true
-              typeApplied.night = true
+              console.log('options.mode not recognized')
             }
           }
 
