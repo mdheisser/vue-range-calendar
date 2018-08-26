@@ -23,7 +23,7 @@
           colors: {
             invalid: '#999',
             hover: '#8acdf6',
-            selected: 'blue'
+            selected: '#8acdf6'
           }
         },
         types: {
