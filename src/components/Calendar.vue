@@ -10,6 +10,7 @@
         :selectedDays="selectedDays"
         :is-selecting="isSelecting"
         :is-invalid="isInvalid"
+        :is-day-selectable-function="isDaySelectableFunction"
       />
     </div>
   </div>
@@ -29,8 +30,9 @@ export default {
     locale: String,
     monthsNumber: Number,
     startMonth: String,
-    bookedDays: Array,
-    blockedDays: Array,
+    types: Object,
+    isSelectionValidFunction: Function,
+    isDaySelectableFunction: Function,
   },
   data() {
     return {
@@ -64,10 +66,38 @@ export default {
 
       const range = this.$moment.range(rangeStartDay.subtract(2, 'days'), rangeEndDay.add(2, 'days'))
       return Array.from(range.by('days')).map((day) => {
+        let typesApplied = {}
+        const dayAsString = day.format('YYYY-MM-DD')
+
+        Object.entries(this.types).forEach(([type, typeContent]) => {
+          const periodsContainingDay = typeContent.periods.filter((period) => ( period.includes(dayAsString)))
+
+          let typeApplied = {
+            morning: false,
+            night: false,
+            color: typeContent.color
+          }
+
+          if (periodsContainingDay.length) {
+            const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
+            if (indexOfDayInPeriod === 0) {
+              typeApplied.night = true
+              typeApplied.morning = false
+            } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
+              typeApplied.morning = true
+              typeApplied.night = false
+            } else {
+              typeApplied.morning = true
+              typeApplied.night = true
+            }
+          }
+
+          typesApplied[type] = typeApplied
+        });
+
         return {
           moment: day,
-          isBooked: (this.bookedDays.length > 0 ? this.bookedDays.includes(day.format('YYYY-MM-DD')) : false),
-          isBlocked: (this.blockedDays.length > 0 ? this.blockedDays.includes(day.format('YYYY-MM-DD')) : false),
+          typesApplied: typesApplied
         }
       })
     },
@@ -95,38 +125,7 @@ export default {
         : []
     },
     isSelectionValid: function () {
-      if (this.selectedDays.length > 0 && this.selectedDays[0] < this.$moment()) {
-        return false
-      }
-
-      let firstInvalidDay = null
-      this.selectedDays.every((selectedDay, index) => {
-        const indexOfSelectedDay =
-          this.days
-            .map(function (day) { return day.moment.format('YYYY-MM-DD') })
-            .indexOf(selectedDay.format('YYYY-MM-DD'))
-
-        if (this.days[indexOfSelectedDay].isBooked) {
-          if (index === 0 && !this.days[indexOfSelectedDay + 1].isBooked) {
-            return true
-          }
-
-          if (index === (this.selectedDays.length - 1) && !this.days[indexOfSelectedDay - 1].isBooked) {
-            return true
-          }
-
-          if (this.days[indexOfSelectedDay].isBlocked && (!this.days[indexOfSelectedDay + 1].isBlocked || !this.days[indexOfSelectedDay -1].isBlocked)) {
-            return true
-          }
-
-          firstInvalidDay = selectedDay
-          return false
-        }
-
-        return true
-      })
-
-      return (null === firstInvalidDay)
+      return this.isSelectionValidFunction(this.selectedDays, this.days)
     },
 
     slideMonths: function (direction) {

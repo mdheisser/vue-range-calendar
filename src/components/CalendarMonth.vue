@@ -13,17 +13,21 @@
         <tbody class="month-table-body">
           <tr v-for="week in weeks" :key="week.id">
             <calendar-day
-              :isHidden="!isDayInMonth(day.moment)"
-              @clicked="dayClicked($event)"
-              @hovered="dayHovered($event)"
               v-for="day in week.days"
               :key="day.id"
-              :day="day"
-              :selected="isDaySelected(day.moment)"
-              :is-selecting="isSelecting"
-              :is-first-selected="isFirstDaySelected(day.moment)"
-              :is-last-selected="isLastDaySelected(day.moment)"
-              :is-invalid="isInvalid"
+              :date="day.moment"
+              :isHidden="!isDayInMonth(day.moment)"
+              :types-applied="day.typesApplied"
+              :selection="{
+                isSelected: isDaySelected(day.moment),
+                isSelecting: isSelecting,
+                isFirstSelected: isFirstDaySelected(day.moment),
+                isLastSelected: isLastDaySelected(day.moment),
+                isInvalid: isInvalid
+              }"
+              :is-day-selectable-function="isDaySelectableFunction"
+              @clicked="dayClicked($event)"
+              @hovered="dayHovered($event)"
             />
           </tr>
         </tbody>
@@ -43,6 +47,7 @@ export default {
     selectedDays: Array,
     isSelecting: Boolean,
     isInvalid: Boolean,
+    isDaySelectableFunction: Function,
   },
   data() {
     return {
@@ -64,24 +69,20 @@ export default {
   methods: {
     renderMonth: function() {
       this.weeks = []
-      this.dayLabels = this.computeDayLabels()
+      this.dayLabels = this.$moment.weekdays(true).map((dayLabel) => (dayLabel.substring(0, 2)))
 
       for (let weekIndex = 0; weekIndex < 5; weekIndex++) {
         let weekDays = []
         let firstDayOWeek = this.$moment(this.month.start).startOf('week').add(weekIndex, 'weeks')
+
         for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
           let day = this.$moment(firstDayOWeek).add(dayIndex, 'days')
-          let dayStatuses = this.computeDayStatuses(day)
+          const dayIndex = this.month.days.findIndex(x => x.moment.isSame(day))
 
           weekDays.push({
             id: dayIndex,
             moment: day,
-            isBooked: dayStatuses.booked,
-            isFirstBooked: dayStatuses.isFirstBooked,
-            isLastBooked: dayStatuses.isLastBooked,
-            isBlocked: dayStatuses.blocked,
-            isFirstBlocked: dayStatuses.isFirstBlocked,
-            isLastBlocked: dayStatuses.isLastBlocked,
+            typesApplied: this.month.days[dayIndex].typesApplied
           })
         }
         this.weeks.push({
@@ -90,44 +91,8 @@ export default {
         })
       }
     },
-    computeDayLabels: function () {
-      const dayLabels = this.$moment.weekdays(true)
-      return dayLabels.map(function (dayLabel) {
-        return dayLabel.substring(0, 2)
-      })
-    },
-    computeDayStatuses: function (day) {
-      const dayIndex = this.month.days.findIndex(x => x.moment.isSame(day))
 
-      const isDayFirstBooked = this.month.days[dayIndex].isBooked
-        && (!this.month.days[dayIndex - 1].isBooked || this.month.days[dayIndex - 1].isBlocked);
-      const isPreviousDayFirstBooked = this.month.days[dayIndex - 1].isBooked
-        && (!this.month.days[dayIndex - 2].isBooked || this.month.days[dayIndex - 2].isBlocked);
-
-      const isDayLastBooked = this.month.days[dayIndex].isBooked
-        && (!this.month.days[dayIndex + 1].isBooked || this.month.days[dayIndex + 1].isBlocked);
-      const isNextDayLastBooked = this.month.days[dayIndex + 1].isBooked
-        && (!this.month.days[dayIndex + 2].isBooked || this.month.days[dayIndex + 2].isBlocked);
-
-      const isDayFirstBlocked = this.month.days[dayIndex].isBlocked
-        && (!this.month.days[dayIndex - 1].isBlocked || this.month.days[dayIndex - 1].isBooked);
-      const isPreviousDayFirstBlocked = this.month.days[dayIndex - 1].isBlocked
-        && (!this.month.days[dayIndex - 2].isBlocked || this.month.days[dayIndex - 2].isBooked);
-
-      const isDayLastBlocked = this.month.days[dayIndex].isBlocked
-        && (!this.month.days[dayIndex + 1].isBlocked || this.month.days[dayIndex + 1].isBooked);
-      const isNextDayLastBlocked = this.month.days[dayIndex + 1].isBlocked
-        && (!this.month.days[dayIndex + 2].isBlocked || this.month.days[dayIndex + 2].isBooked);
-
-      return {
-        booked: this.month.days[dayIndex].isBooked,
-        isFirstBooked: isDayFirstBooked && !isPreviousDayFirstBooked,
-        isLastBooked: isDayLastBooked && !isNextDayLastBooked,
-        blocked: this.month.days[dayIndex].isBlocked,
-        isFirstBlocked: isDayFirstBlocked && !isPreviousDayFirstBlocked,
-        isLastBlocked: isDayLastBlocked && !isNextDayLastBlocked,
-      }
-    },
+    // Helpers
     isDayInMonth: function (day) {
       return day.month() === this.month.start.month()
     },
@@ -146,6 +111,7 @@ export default {
       }).indexOf(day.format('YYYY-MM-DD'))
     },
 
+    // Events
     dayClicked: function (date) {
       this.$emit('daySelected', date)
     },
