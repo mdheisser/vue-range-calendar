@@ -18,6 +18,19 @@ yarn add vue-range-calendar
 // or npm install vue-range-calendar
 ```
 
+In your Vue setp:
+```
+
+const Moment = require('moment')
+const MomentRange = require('moment-range')
+const MomentExtended = MomentRange.extendMoment(Moment)
+
+import VueMoment from 'vue-moment'
+import 'moment/locale/fr.js'
+
+Vue.use(VueMoment, { moment: MomentExtended })
+```
+
 In your vue template:
 ```
 <calendar

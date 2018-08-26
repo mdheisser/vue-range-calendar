@@ -1,12 +1,20 @@
 {
-  "name": "vue-range-calendar",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@luckeyhomes/vue-range-calendar",
+  "version": "1.0.1",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build-bundle": "vue-cli-service build --target lib --name vue-range-calendar main.js",
     "lint": "vue-cli-service lint"
   },
+  "main": "./dist/vue-range-calendar.js",
+  "files": [
+    "docs/*",
+    "dist/*",
+    "src/*",
+    "*.json",
+    "*.js"
+  ],
   "dependencies": {
     "moment-range": "^4.0.1",
     "vue": "^2.5.17",

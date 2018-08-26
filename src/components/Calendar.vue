@@ -19,9 +19,6 @@
 
 <script>
 
-import 'moment/locale/en-gb'
-import 'moment/locale/fr'
-
 import CalendarMonth from './CalendarMonth.vue'
 import CalendarMonthSlider from './CalendarMonthSlider.vue'
 
