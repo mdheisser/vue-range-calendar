@@ -6,7 +6,7 @@ Displays many months. Display range dates with different colors. Enables date ra
 
 ### Demo
 
-![Demo Half-day mode](./docs/demo-calendar.png)
+![Demo Half-day mode](https://raw.githubusercontent.com/LuckeyHomes/vue-range-calendar/master/docs/demo-calendar.png)
 
 ### Compatibility
 
@@ -20,7 +20,6 @@ yarn add vue-range-calendar
 
 In your Vue setp:
 ```
-
 const Moment = require('moment')
 const MomentRange = require('moment-range')
 const MomentExtended = MomentRange.extendMoment(Moment)
