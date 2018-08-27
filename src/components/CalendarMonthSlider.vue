@@ -24,7 +24,7 @@ export default {
   .month-slider {
     cursor: pointer;
     height: 23px;
-    width: 23px;
+    width: 40px;
     fill: #444;
     padding: 6px 10px;
     border-radius: 1px;

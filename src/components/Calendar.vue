@@ -179,6 +179,7 @@ export default {
     background-color: white;
     padding-top: 10px;
     padding-bottom: 10px;
+    position: relative;
 
     font-family: 'Arial';
   }
