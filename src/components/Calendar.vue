@@ -78,20 +78,31 @@ export default {
 
           if (periodsContainingDay.length) {
             if (this.options.mode === 'half-day') {
-              const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
-              if (indexOfDayInPeriod === 0) {
+
+              if (periodsContainingDay.length === 2) {
                 typeApplied.night = true
-                typeApplied.morning = false
-              } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
                 typeApplied.morning = true
-                typeApplied.night = false
+                typeApplied.separation = true
               } else {
-                typeApplied.morning = true
-                typeApplied.night = true
+                const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
+                if (indexOfDayInPeriod === 0) {
+                  typeApplied.night = true
+                  typeApplied.morning = false
+                  typeApplied.separation = false
+                } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
+                  typeApplied.morning = true
+                  typeApplied.night = false
+                  typeApplied.separation = false
+                } else {
+                  typeApplied.morning = true
+                  typeApplied.night = true
+                  typeApplied.separation = false
+                }
               }
             } else if (this.options.mode === 'full-day') {
               typeApplied.night = true
               typeApplied.morning = true
+              typeApplied.separation = false
             } else {
               console.log('options.mode not recognized')
             }

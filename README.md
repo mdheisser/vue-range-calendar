@@ -12,14 +12,19 @@ Displays many months. Display range dates with different colors. Enables date ra
 
 Tested on Chrome 68+, IE11/Edge, Safari 5
 
-## How to use
+## Installation
+
+### Get Package
+
 ```
-yarn add vue-range-calendar
-// or npm install vue-range-calendar
+yarn add moment moment-range vue-moment vue-range-calendar
+// or npm install moment moment-range vue-moment vue-range-calendar
 ```
 
-In your Vue setp:
+### Vue Setup:
 ```
+import Vue from 'vue'
+
 const Moment = require('moment')
 const MomentRange = require('moment-range')
 const MomentExtended = MomentRange.extendMoment(Moment)
@@ -27,8 +32,41 @@ const MomentExtended = MomentRange.extendMoment(Moment)
 import VueMoment from 'vue-moment'
 import 'moment/locale/fr.js'
 
+import Calendar from 'vue-range-calendar'
+
 Vue.use(VueMoment, { moment: MomentExtended })
+
+new Vue({
+  render: h => h(Calendar)
+}).$mount('#calendar-container')
+
 ```
+
+### Vue Setup using browser scripts:
+```
+<script src="vue.min.js"></script>
+<script src="moment"></script>
+<script src="moment-range"></script>
+<script src="vue-moment.min.js"></script>
+<script src="vue-range-calendar.min.js"></script>
+
+<script type="text/javascript">
+    Vue.use(vueMoment, { moment: window['moment-range'].extendMoment(moment) })
+    new Vue({
+        data() {
+            return {
+                ...
+            }
+        },
+        methods:
+            ...
+        },
+    }).$mount('#calendar-container')
+</script>
+
+```
+
+## Usage
 
 In your vue template:
 ```

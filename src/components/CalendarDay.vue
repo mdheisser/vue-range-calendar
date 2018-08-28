@@ -54,8 +54,13 @@ export default {
       return this.isDaySelectableFunction(this) && !this.isHidden
     },
     dayBackground: function() {
+      if (this.isHidden) {
+        return;
+      }
+
       const morningTypeApplied = Object.keys(this.typesApplied).find((type) => (this.typesApplied[type].morning === true))
       const nightTypeApplied = Object.keys(this.typesApplied).find((type) => (this.typesApplied[type].night === true))
+      const separationTypeApplied = Object.keys(this.typesApplied).find((type) => (this.typesApplied[type].separation === true))
 
       let morningColor = morningTypeApplied ? this.typesApplied[morningTypeApplied].color : 'transparent';
       let nightColor = nightTypeApplied ? this.typesApplied[nightTypeApplied].color : 'transparent';
@@ -91,7 +96,7 @@ export default {
         }
       }
 
-      if (morningColor === nightColor) {
+      if (morningColor === nightColor && !separationTypeApplied) {
         return {
           background: morningColor
         }
@@ -132,6 +137,7 @@ export default {
     vertical-align: middle;
     padding: 0;
     z-index: 0;
+    border-bottom: 2px solid white;
   }
 
   .calendar-day.selectable {
