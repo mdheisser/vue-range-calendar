@@ -138,6 +138,7 @@ export default {
     padding: 0;
     z-index: 0;
     border-bottom: 2px solid white;
+    background-clip: padding-box!important;
   }
 
   .calendar-day.selectable {
