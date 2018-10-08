@@ -22,9 +22,12 @@
     @mouseenter="mouseEnter"
     @mouseleave="mouseLeave"
   >
-    <div class="calendar-day-wrapper">
-      <div class="calendar-day-content">
-        {{ date | moment('DD') }}
+    <div class="calendar-day-wrapper" :style="dayWidthStyle">
+      <div class="calendar-day-date-content calendar-day-content">
+        <div>{{ date | moment('DD') }}</div>
+      </div>
+      <div class="calendar-day-label-content calendar-day-content">
+        <div>{{ label }}</div>
       </div>
     </div>
   </td>
@@ -37,6 +40,8 @@ export default {
   props: {
     date: Object,
     isHidden: Boolean,
+    label: String,
+    size: Number,
 
     typesApplied: Object,
     selection: Object,
@@ -52,6 +57,12 @@ export default {
   computed: {
     isDaySelectable: function() {
       return this.isDaySelectableFunction(this) && !this.isHidden
+    },
+    dayWidthStyle: function () {
+      return {
+        height: this.size + 'px',
+        width: this.size + 'px'
+      }
     },
     dayBackground: function() {
       if (this.isHidden) {
@@ -102,11 +113,12 @@ export default {
         }
       } else {
         return {
-          background: `linear-gradient(to right bottom, ${morningColor} 0, ${morningColor} calc(50% - 2px), #fff 50%,` + `
-          ${nightColor} calc(50% + 2px), ${nightColor})`
+          background: `linear-gradient(to right bottom, ${morningColor} 0, ${morningColor} calc(50% - 1px),` + `
+          #fff calc(50% - 1px), #fff calc(50% + 1px),` + `
+          ${nightColor} calc(50% + 1px), ${nightColor})`
         }
       }
-    }
+    },
   },
   methods: {
     clicked: function() {
@@ -137,27 +149,10 @@ export default {
     vertical-align: middle;
     padding: 0;
     z-index: 0;
-    border-bottom: 2px solid white;
-    background-clip: padding-box!important;
   }
 
   .calendar-day.selectable {
     cursor: pointer;
-  }
-
-  .calendar-day-wrapper {
-    display: block;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    line-height: 0;
-    margin-top: 50%;
-  }
-
-  .calendar-day-wrapper::after {
-    display: block;
-    margin-top: 50%;
-    content: '';
   }
 
   .hidden .calendar-day-wrapper {
@@ -165,6 +160,20 @@ export default {
   }
 
   .calendar-day-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .calendar-day-date-content {
     font-size: 0.85rem;
+  }
+  .calendar-day-label-content {
+    margin-top: 10px;
+    color: #888;
+    font-size: 0.75rem;
   }
 </style>

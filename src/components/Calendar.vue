@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar-container">
+  <div class="calendar-container" ref="calendarContainer">
     <calendar-month-slider direction="previous" @click.native="slideMonths('previous')"/>
     <calendar-month-slider direction="next" @click.native="slideMonths('next')" />
     <div class="calendar-month-container" v-for="month in months" :key="month.id">
@@ -12,6 +12,7 @@
         :is-invalid="isInvalid"
         :is-day-selectable-function="isDaySelectableFunction"
         :options="{ colors: options.colors, mode: options.mode }"
+        :daySize="daySize"
       />
     </div>
   </div>
@@ -29,6 +30,7 @@ export default {
     monthsNumber: Number,
     startDay: String,
     types: Object,
+    dayLabels: Array,
     isSelectionValidFunction: Function,
     isDaySelectableFunction: Function,
   },
@@ -37,6 +39,7 @@ export default {
       months: [],
       selectedDays: [],
       days: [],
+      daySize: 30,
 
       isSelecting: false,
       isInvalid: false,
@@ -47,6 +50,8 @@ export default {
   mounted() {
     this.$moment.locale(this.options.locale)
     this.renderCalendar(this.$moment(this.startDay))
+    window.addEventListener('resize', this.computeDaySize)
+    this.computeDaySize()
   },
   methods: {
     renderCalendar: function (start) {
@@ -64,58 +69,68 @@ export default {
 
       const range = this.$moment.range(rangeStartDay.subtract(2, 'days'), rangeEndDay.add(2, 'days'))
       return Array.from(range.by('days')).map((day) => {
-        let typesApplied = {}
-        const dayAsString = day.format('YYYY-MM-DD')
-
-        Object.entries(this.types).forEach(([type, typeContent]) => {
-          const periodsContainingDay = typeContent.periods.filter((period) => ( period.includes(dayAsString)))
-
-          let typeApplied = {
-            morning: false,
-            night: false,
-            color: typeContent.color
-          }
-
-          if (periodsContainingDay.length) {
-            if (this.options.mode === 'half-day') {
-
-              if (periodsContainingDay.length === 2) {
-                typeApplied.night = true
-                typeApplied.morning = true
-                typeApplied.separation = true
-              } else {
-                const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
-                if (indexOfDayInPeriod === 0) {
-                  typeApplied.night = true
-                  typeApplied.morning = false
-                  typeApplied.separation = false
-                } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
-                  typeApplied.morning = true
-                  typeApplied.night = false
-                  typeApplied.separation = false
-                } else {
-                  typeApplied.morning = true
-                  typeApplied.night = true
-                  typeApplied.separation = false
-                }
-              }
-            } else if (this.options.mode === 'full-day') {
-              typeApplied.night = true
-              typeApplied.morning = true
-              typeApplied.separation = false
-            } else {
-              console.log('options.mode not recognized')
-            }
-          }
-
-          typesApplied[type] = typeApplied
-        });
-
         return {
           moment: day,
-          typesApplied: typesApplied
+          typesApplied: this.computeDayTypes(day),
+          label: this.fetchDayLabel(day)
         }
       })
+    },
+    fetchDayLabel: function (day) {
+      const matchingDayLabel = this.dayLabels.find((dayLabel) => {
+        return dayLabel.date === day.format('YYYY-MM-DD')
+      })
+      return matchingDayLabel ? matchingDayLabel.text : null
+    },
+    computeDayTypes: function (day) {
+      let typesApplied = {}
+      const dayAsString = day.format('YYYY-MM-DD')
+
+      Object.entries(this.types).forEach(([type, typeContent]) => {
+        const periodsContainingDay = typeContent.periods.filter((period) => ( period.includes(dayAsString)))
+
+        let typeApplied = {
+          morning: false,
+          night: false,
+          color: typeContent.color
+        }
+
+        if (periodsContainingDay.length) {
+          if (this.options.mode === 'half-day') {
+
+            if (periodsContainingDay.length === 2) {
+              typeApplied.night = true
+              typeApplied.morning = true
+              typeApplied.separation = true
+            } else {
+              const indexOfDayInPeriod = periodsContainingDay[0].indexOf(dayAsString)
+              if (indexOfDayInPeriod === 0) {
+                typeApplied.night = true
+                typeApplied.morning = false
+                typeApplied.separation = false
+              } else if (indexOfDayInPeriod === periodsContainingDay[0].length - 1) {
+                typeApplied.morning = true
+                typeApplied.night = false
+                typeApplied.separation = false
+              } else {
+                typeApplied.morning = true
+                typeApplied.night = true
+                typeApplied.separation = false
+              }
+            }
+          } else if (this.options.mode === 'full-day') {
+            typeApplied.night = true
+            typeApplied.morning = true
+            typeApplied.separation = false
+          } else {
+            console.log('options.mode not recognized')
+          }
+        }
+
+        typesApplied[type] = typeApplied
+      })
+
+      return typesApplied
     },
     computeMonthObjects: function (start) {
       let months = []
@@ -124,10 +139,10 @@ export default {
         months.push({
           id: i,
           start: monthStart,
-          days: this.filterDatesInMonth(this.days, monthStart)
+          days: this.filterDatesInMonth(this.days, monthStart),
         })
       }
-      return months;
+      return months
     },
     filterDatesInMonth: function (datesArray, startOfMonth) {
       return datesArray ?
@@ -142,6 +157,12 @@ export default {
     },
     isSelectionValid: function () {
       return this.isSelectionValidFunction(this.selectedDays, this.days)
+    },
+    computeDaySize: function () {
+      let windowWidth = window.innerWidth || document.documentElement.clientWidth
+      this.daySize = (windowWidth > 700) ?
+        this.$refs.calendarContainer.offsetWidth / 25 :
+        this.$refs.calendarContainer.offsetWidth / 9
     },
 
     slideMonths: function (direction) {
@@ -178,6 +199,9 @@ export default {
         }
       }
     }
+  },
+  beforeDestroy: function () {
+    window.removeEventListener('resize', this.computeDaySize)
   },
   components: { CalendarMonth, CalendarMonthSlider }
 }

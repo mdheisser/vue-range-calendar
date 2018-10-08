@@ -3,7 +3,7 @@
     <div class="month-name">
       {{ month.start | moment('MMM YYYY') }}
     </div>
-    <div class="month-table-container">
+    <div class="month-table-container" ref="monthContainer">
       <table class="month-table">
         <thead class="month-table-header">
         <tr>
@@ -13,11 +13,14 @@
         <tbody class="month-table-body">
           <tr v-for="week in weeks" :key="week.id">
             <calendar-day
+              v-if="week.type !== 'spacer'"
               v-for="day in week.days"
               :key="day.id"
               :date="day.moment"
               :isHidden="!isDayInMonth(day.moment)"
               :types-applied="day.typesApplied"
+              :label="day.label"
+              :size="daySize"
               :selection="{
                 isSelected: isDaySelected(day.moment) && isDayInMonth(day.moment),
                 isSelecting: isSelecting,
@@ -30,6 +33,9 @@
               @clicked="dayClicked($event)"
               @hovered="dayHovered($event)"
             />
+            <div class="spacer"
+              v-if="week.type === 'spacer'">
+            </div>
           </tr>
         </tbody>
       </table>
@@ -49,12 +55,13 @@ export default {
     isSelecting: Boolean,
     isInvalid: Boolean,
     isDaySelectableFunction: Function,
-    options: Object
+    options: Object,
+    daySize: Number,
   },
   data() {
     return {
       dayLabels: [],
-      weeks: []
+      weeks: [],
     }
   },
   watch: {
@@ -83,13 +90,21 @@ export default {
 
           weekDays.push({
             id: dayIndex,
-            moment: day,
-            typesApplied: this.month.days[dayIndex].typesApplied
+            moment: this.month.days[dayIndex].moment,
+            typesApplied: this.month.days[dayIndex].typesApplied,
+            label: this.month.days[dayIndex].label
           })
         }
         this.weeks.push({
           id: weekIndex,
-          days: weekDays
+          days: weekDays,
+          type: 'week'
+        })
+        // This is a hack for safari because it does not support background gradient well with borders
+        this.weeks.push({
+          id: weekIndex + '-spacer',
+          days: [],
+          type: 'spacer'
         })
       }
     },
@@ -142,7 +157,6 @@ export default {
 
   .month-table {
     width: 100%;
-    border-collapse: collapse;
     border-spacing: 0;
   }
 
@@ -157,5 +171,9 @@ export default {
     text-transform: capitalize;
     border-bottom: 1px solid #bbb;
     padding-bottom: 8px;
+  }
+
+  .spacer {
+    height: 3px;
   }
 </style>

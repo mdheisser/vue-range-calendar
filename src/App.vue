@@ -5,6 +5,7 @@
       :months-number="3"
       :types="types"
       :options="options"
+      :day-labels="dayLabels"
       :is-selection-valid-function="isSelectionValid"
       :is-day-selectable-function="isDaySelectable"
       @selected-range="selectedRange($event)"
@@ -51,7 +52,27 @@
             ],
             color: 'red'
           }
-        }
+        },
+        dayLabels: [
+          {
+            date: '2018-09-09',
+            text: 'test'
+          },
+          {
+            date: '2018-09-10',
+            text: 'test'
+          },
+          {
+            date: '2018-09-11',
+            text: 'test'
+          },
+          {
+            date: '2018-10-09',
+            text: 'test'
+          },
+        ]
+
+
       }
     },
     methods: {
