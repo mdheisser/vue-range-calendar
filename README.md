@@ -75,6 +75,7 @@ In your vue template:
   :months-number="3"
   :types="types"
   :options="options"
+  :day-labels="[]"
   :is-selection-valid-function="isSelectionValid"
   :is-day-selectable-function="isDaySelectable"
   @selected-range="selectedRange($event)"
