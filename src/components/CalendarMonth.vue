@@ -84,8 +84,8 @@ export default {
         let weekDays = []
         let firstDayOWeek = this.$moment(this.month.start).startOf('week').add(weekIndex, 'weeks')
 
-        for (let dayIndex = 0; dayIndex < 7; dayIndex++) {
-          let day = this.$moment(firstDayOWeek).add(dayIndex, 'days')
+        for (let dayIterator = 0; dayIterator < 7; dayIterator++) {
+          let day = this.$moment(firstDayOWeek).add(dayIterator, 'days')
           const dayIndex = this.month.days.findIndex(x => x.moment.isSame(day))
 
           weekDays.push({
