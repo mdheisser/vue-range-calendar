@@ -171,7 +171,7 @@ export default {
       } else if (direction === 'previous') {
         this.renderCalendar(this.months[0].start.subtract(this.monthsNumber, 'months').startOf('month'))
       }
-      this.$emit('slide')
+      this.$emit('slide', direction)
     },
     daySelected: function(dateSelected) {
       if (!this.isSelecting) {
