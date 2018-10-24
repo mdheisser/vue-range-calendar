@@ -3,11 +3,6 @@
     :class="{
       'hidden': isHidden,
 
-      'morning-booked': typesApplied.booked.morning,
-      'night-booked': typesApplied.booked.night,
-      'morning-blocked': typesApplied.blocked.morning,
-      'night-blocked': typesApplied.blocked.night,
-
       'selectable': isDaySelectable,
 
       'first-selected': selection.isFirstSelected,
