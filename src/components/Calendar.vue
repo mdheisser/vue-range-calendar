@@ -19,7 +19,7 @@
 </template>
 
 <script>
-
+import './polyfill.js'
 import CalendarMonth from './CalendarMonth.vue'
 import CalendarMonthSlider from './CalendarMonthSlider.vue'
 
