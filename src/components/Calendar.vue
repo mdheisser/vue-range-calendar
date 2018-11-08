@@ -66,7 +66,7 @@ export default {
         rangeEndDay = (rangeEndDay < this.selectedDays[-1]) ? this.selectedDays[-1] : rangeEndDay
       }
 
-      const range = this.$moment.range(rangeStartDay.subtract(2, 'days'), rangeEndDay.add(2, 'days'))
+      const range = this.$moment.range(rangeStartDay.subtract(2, 'days'), rangeEndDay.add(7, 'days'))
       return Array.from(range.by('days')).map((day) => {
         return {
           moment: day,
@@ -149,7 +149,7 @@ export default {
           .filter((day) => {
             return day.moment.isBetween(
               this.$moment(startOfMonth).startOf('month').startOf('week').subtract(3, 'days'),
-              this.$moment(startOfMonth).endOf('month').endOf('week').add(3, 'days')
+              this.$moment(startOfMonth).endOf('month').endOf('week').add(7, 'days')
             )
           })
         : []
