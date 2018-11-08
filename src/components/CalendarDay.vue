@@ -1,7 +1,7 @@
 <template>
   <td class="calendar-day"
     :class="{
-      'hidden': isHidden,
+      'hidden-day': isHidden,
 
       'selectable': isDaySelectable,
 
@@ -150,7 +150,7 @@ export default {
     cursor: pointer;
   }
 
-  .hidden .calendar-day-wrapper {
+  .hidden-day .calendar-day-wrapper {
     display: none;
   }
 

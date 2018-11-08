@@ -80,7 +80,7 @@ export default {
       this.weeks = []
       this.dayLabels = this.$moment.weekdays(true).map((dayLabel) => (dayLabel.substring(0, 2)))
 
-      for (let weekIndex = 0; weekIndex < 5; weekIndex++) {
+      for (let weekIndex = 0; weekIndex < 6; weekIndex++) {
         let weekDays = []
         let firstDayOWeek = this.$moment(this.month.start).startOf('week').add(weekIndex, 'weeks')
 
