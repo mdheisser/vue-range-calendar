@@ -12,6 +12,7 @@
       'selecting': selection.isSelecting
     }"
     :style="dayBackground"
+    :id="dayId"
     @click="clicked"
     @mouseover="mouseOver"
     @mouseenter="mouseEnter"
@@ -50,6 +51,9 @@ export default {
     }
   },
   computed: {
+    dayId: function () {
+      return this.isHidden ? null : this.date.format('YYYY-MM-DD')
+    },
     isDaySelectable: function() {
       return this.isDaySelectableFunction(this) && !this.isHidden
     },
