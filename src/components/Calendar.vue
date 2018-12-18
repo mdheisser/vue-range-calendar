@@ -198,6 +198,9 @@ export default {
           this.isInvalid = !this.isSelectionValid()
         }
       }
+    },
+    clearSelection: function () {
+      this.selectedDays = []
     }
   },
   beforeDestroy: function () {
