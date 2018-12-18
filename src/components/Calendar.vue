@@ -185,6 +185,8 @@ export default {
             start: this.startSelectionDate.format('YYYY-MM-DD'),
             end: this.endSelectionDate.format('YYYY-MM-DD'),
           })
+        } else {
+          this.clearSelection()
         }
       }
     },
@@ -192,7 +194,7 @@ export default {
       if (this.isSelecting) {
         this.endSelectionDate = dateHovered
         if (this.startSelectionDate > this.endSelectionDate) {
-          this.selectedDays = []
+          this.clearSelection()
         } else {
           this.selectedDays = Array.from(this.$moment.range(this.startSelectionDate, this.endSelectionDate).by('days'))
           this.isInvalid = !this.isSelectionValid()
