@@ -121,12 +121,12 @@ export default {
   },
   methods: {
     clicked: function() {
-      if (!this.isHidden) {
+      if (this.isDaySelectable) {
         this.$emit('clicked', this.date)
       }
     },
     mouseOver: function() {
-      if (!this.isHidden) {
+      if (this.isDaySelectable) {
         this.$emit('hovered', this.date)
       }
     },
