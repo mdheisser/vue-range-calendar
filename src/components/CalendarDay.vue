@@ -21,9 +21,18 @@
     <div class="calendar-day-wrapper" :style="dayWidthStyle">
       <div class="calendar-day-date-content calendar-day-content">
         <div>{{ date | moment('DD') }}</div>
+        <div v-if="label && label.crossed"
+          :class="{
+            'cross-out': true,
+            'morning': label.morning,
+            'full': label.full,
+            'night': label.night,
+            'separation': label.separation
+          }"
+        ></div>
       </div>
       <div class="calendar-day-label-content calendar-day-content">
-        <div>{{ label }}</div>
+        <div v-if="label">{{ label.text }}</div>
       </div>
     </div>
   </td>
@@ -36,7 +45,7 @@ export default {
   props: {
     date: Object,
     isHidden: Boolean,
-    label: String,
+    label: Object,
     size: Number,
 
     typesApplied: Object,
@@ -141,6 +150,22 @@ export default {
 </script>
 
 <style scoped>
+  .cross-out {
+    width: 100%;
+    height: 10px;
+  }
+  .cross-out.full {
+    background: darkblue;
+  }
+  .cross-out.night {
+    background: linear-gradient(135deg, transparent 50%, darkblue 50%);
+  }
+  .cross-out.morning {
+    background: linear-gradient(135deg, darkblue 51%, transparent 51%);
+  }
+  .cross-out.separation {
+    background: linear-gradient(135deg, darkblue 48%, transparent 49% 52%, darkblue 53%);
+  }
   .calendar-day {
     width: 30px;
     text-align: center;

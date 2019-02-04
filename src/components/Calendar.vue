@@ -79,7 +79,7 @@ export default {
       const matchingDayLabel = this.dayLabels.find((dayLabel) => {
         return dayLabel.date === day.format('YYYY-MM-DD')
       })
-      return matchingDayLabel ? matchingDayLabel.text : null
+      return matchingDayLabel ? matchingDayLabel : null
     },
     computeDayTypes: function (day) {
       let typesApplied = {}
