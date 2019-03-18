@@ -189,6 +189,7 @@ export default {
           this.clearSelection()
         }
       }
+      this.$emit('clicked', dateSelected)
     },
     dayHovered: function(dateHovered) {
       if (this.isSelecting) {
@@ -203,6 +204,9 @@ export default {
     },
     clearSelection: function () {
       this.selectedDays = []
+    },
+    stopSelection: function () {
+      this.isSelecting = false
     }
   },
   beforeDestroy: function () {
