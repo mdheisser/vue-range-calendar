@@ -130,14 +130,10 @@ export default {
   },
   methods: {
     clicked: function() {
-      if (this.isDaySelectable) {
-        this.$emit('clicked', this.date)
-      }
+      this.$emit('clicked', this.date)
     },
     mouseOver: function() {
-      if (this.isDaySelectable) {
-        this.$emit('hovered', this.date)
-      }
+      this.$emit('hovered', this.date)
     },
     mouseEnter: function() {
       this.isHovered = true
