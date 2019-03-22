@@ -9,7 +9,8 @@
       'last-selected': selection.isLastSelected,
       'selected': selection.isSelected,
       'invalid': selection.isInvalid,
-      'selecting': selection.isSelecting
+      'selecting': selection.isSelecting,
+      'crossed': isDayCrossed
     }"
     :style="dayBackground"
     :id="dayId"
@@ -21,7 +22,7 @@
     <div class="calendar-day-wrapper" :style="dayWidthStyle">
       <div class="calendar-day-date-content calendar-day-content">
         <div>{{ date | moment('DD') }}</div>
-        <div v-if="label && label.crossed"
+        <div v-if="isDayCrossed"
           :class="{
             'cross-out': true,
             'morning': label.morning,
@@ -65,6 +66,9 @@ export default {
     },
     isDaySelectable: function() {
       return this.isDaySelectableFunction(this) && !this.isHidden
+    },
+    isDayCrossed: function () {
+      return this.label && this.label.crossed
     },
     dayWidthStyle: function () {
       return {
