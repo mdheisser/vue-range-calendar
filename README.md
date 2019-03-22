@@ -4,10 +4,6 @@
 
 Displays many months. Display range dates with different colors. Enables date range selection. Two modes (half-day or full-day)
 
-### Demo
-
-![Demo Half-day mode](https://raw.githubusercontent.com/LuckeyHomes/vue-range-calendar/master/docs/demo-calendar.png)
-
 ### Compatibility
 
 Tested on Chrome 68+, IE11/Edge, Safari 5
