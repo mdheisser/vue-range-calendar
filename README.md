@@ -4,10 +4,6 @@
 
 Displays many months. Display range dates with different colors. Enables date range selection. Two modes (half-day or full-day)
 
-### Compatibility
-
-Tested on Chrome 68+, IE11/Edge, Safari 5
-
 ## Installation
 
 ### Get Package
