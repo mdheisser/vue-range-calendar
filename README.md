@@ -1,6 +1,6 @@
 # vue-range-calendar
 
-## Another Calendar for VueJS !
+## Calendar for VueJS !
 
 Displays many months. Display range dates with different colors. Enables date range selection. Two modes (half-day or full-day)
 
